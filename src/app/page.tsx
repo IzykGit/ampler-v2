@@ -1,10 +1,21 @@
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import styles from './styles/homePage.module.css'
+import { useSession } from "next-auth/react";
+
 
 export default function Home() {
+
+  const { data: session, status, update } = useSession();
+  console.log(session)
   return (
     <div>
+      <div>
+        <h1>{session?.user?.name}</h1>
+      </div>
+
+
         <div>
           <h1>Select Franchise</h1>
           <h3>This application is still in early development. Some features may be missing or broken, and your schedule may not be viewable.
@@ -38,4 +49,23 @@ export default function Home() {
         </div>
     </div>
   );
+}
+
+
+export async function getProps({context}: any) {
+  const session = await getSession(context)
+  
+  if(!session) {
+    return {
+      redirect: {
+        destination: "/store",
+        permanent: false
+      }
+    }
+  }
+
+
+  return {
+    props: { session }
+  }
 }

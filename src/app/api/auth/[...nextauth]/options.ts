@@ -4,9 +4,6 @@ import Credentials from "next-auth/providers/credentials"
 import executeQuery from "../../sql/db";
 
 export const options: NextAuthOptions = {
-    /* pages: {
-        signIn: '/franchise/login'
-    }, */
     session:  {
         strategy: "jwt",
         maxAge: 30 * 24 * 60 * 60
@@ -40,28 +37,11 @@ export const options: NextAuthOptions = {
                 if(employee) {
                     return {
                         id: employee.clock_in_pin,
-                        name: `${employee.first_name} + ${employee.last_name}`,
+                        name: `${employee.first_name} ${employee.last_name}`,
+                        role: employee.role
                     }
                 }
             }
         })
     ],
-    callbacks: {
-        jwt: async ({ token, employee }) => {
-            if(employee) {
-                token.emid = employee.emid;
-                token.name = employee.name
-            }
-
-            return token
-        },
-        session: async ({session, token}) => {
-            if(token) {
-                session.employee.emid = token.emid;
-                session.name = token.name;
-            }
-
-            return session;
-        }
-    }
 }
