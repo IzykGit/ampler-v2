@@ -23,8 +23,6 @@ const S3Upload = (storeId: any) => {
 
         const formData = new FormData();
         formData.append('file', file)
-
-        console.log(formData)
         
         console.log(file)
 

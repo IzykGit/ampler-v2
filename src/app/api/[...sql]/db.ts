@@ -11,7 +11,7 @@ const pool = mysql.createPool({
     queueLimit: 0
 })
 
-const executeQuery = async (query: string, data: any[]) => {
+const executeQuery = async (query: string, data: any[] = []) => {
     try {
         const connection = await pool.getConnection();
         const [result] = await connection.execute(query, data);

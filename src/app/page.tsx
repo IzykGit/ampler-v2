@@ -1,19 +1,34 @@
 'use client'
-import Image from "next/image";
+
 import Link from "next/link";
 import styles from './styles/homePage.module.css'
-import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 
 
 export default function Home() {
 
-  const { data: session, status, update } = useSession();
-  console.log(session)
+  const [data, setData] = useState([])
+
+  useEffect(()  => {
+    fetchFranchises()
+  }, [])
+
+  async function fetchFranchises() {
+    const response = await axios.get('/api/sql/franchises', {
+      headers: {
+        'Accept': 'application/json',
+      }
+    })
+    console.log(response)
+  }
+
+  console.log(data)
+
+
   return (
     <div>
-      <div>
-        <h1>{session?.user?.name}</h1>
-      </div>
 
 
         <div>
@@ -26,7 +41,7 @@ export default function Home() {
 
 
         <div className={styles.storeCardsContainer}>
-          <Link href={{ pathname: "/franchise", query: {franchiseID: 1}}}>
+          <Link href={{ pathname: "/franchise", query: {franchise_id: 1}}}>
               <div className={styles.storeCard}>
                 <img src="/burgerKingLogo.jpg" alt='Burger King'/>
               </div>
@@ -52,20 +67,4 @@ export default function Home() {
 }
 
 
-export async function getProps({context}: any) {
-  const session = await getSession(context)
-  
-  if(!session) {
-    return {
-      redirect: {
-        destination: "/store",
-        permanent: false
-      }
-    }
-  }
 
-
-  return {
-    props: { session }
-  }
-}

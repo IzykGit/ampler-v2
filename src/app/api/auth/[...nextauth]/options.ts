@@ -1,7 +1,7 @@
 
 import type { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials"
-import executeQuery from "../../sql/db";
+import executeQuery from "../../[...sql]/db";
 
 export const options: NextAuthOptions = {
     session:  {
@@ -32,14 +32,10 @@ export const options: NextAuthOptions = {
                 const { firstName, lastName, password } = credentials || {};
 
                 const query = "SELECT * FROM employees WHERE first_name = ? and last_name = ? and clock_in_pin = ?"
-                const [employee]: any = await executeQuery(query, [firstName, lastName, password])
+                const [user]: any = await executeQuery(query, [firstName, lastName, password])
             
-                if(employee) {
-                    return {
-                        id: employee.clock_in_pin,
-                        name: `${employee.first_name} ${employee.last_name}`,
-                        role: employee.role
-                    }
+                if(user) {
+                    return
                 }
             }
         })

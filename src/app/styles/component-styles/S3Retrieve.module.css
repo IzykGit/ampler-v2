@@ -1,0 +1,27 @@
+.displayContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.togglePageBtn {
+    margin: 0px 10px 0px 10px;
+}
+
+
+.schedulerContainer {
+    display: flex;
+    justify-content: center;
+}
+
+@media screen and (max-width: 1000px) {
+    .scheduleContainer {
+        overflow-y: hidden;
+        overflow-x: scroll;
+        width: 100%;
+    }
+}
+
+
+

@@ -1,6 +1,11 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 
-const Franchise = () => {
+
+const Franchise = ({searchParams}: any) => {
+
+
+
   return (
     <div>Franchise</div>
   )
