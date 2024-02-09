@@ -29,13 +29,13 @@ export const options: NextAuthOptions = {
                 }
             },
             async authorize(credentials, req) {
+
                 const { firstName, lastName, password } = credentials || {};
 
                 const query = "SELECT * FROM employees WHERE first_name = ? and last_name = ? and clock_in_pin = ?"
                 const [user]: any = await executeQuery(query, [firstName, lastName, password])
-            
                 if(user) {
-                    return
+                    return user
                 }
             }
         })
