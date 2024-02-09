@@ -1,63 +1,98 @@
 'use client'
-import React from 'react'
-import { useState } from 'react'
+
+import { useState } from "react"
 
 
-const S3Upload = (storeId: any) => {
+
+export default function UploadForm() {
+    const storeId = 14392
 
     const [file, setFile] = useState(null)
+    const [uploading, setUploading] = useState(false)
 
-    function handleFileChange(e: any) {
-        setFile(e.target.files[0])
+    const resultElement = typeof window !== "undefined" ? window.document.getElementById('fileResult') : null;
+
+
+
+    const handleFileChange = (e: any) => {
+        setFile(e.target.files[0]);
+        if(resultElement) {
+            resultElement.innerHTML = ""
+        }
     }
 
-    async function handleSubmit(e: any) {
+
+
+
+    const handleSubmit =  async (e: any) => {
         e.preventDefault();
 
+
+
         if(!file) {
-            console.log("Please select a file to upload")
             return
         }
 
 
+        
+        setUploading(true);
 
         const formData = new FormData();
-        formData.append('file', file)
-        
-        console.log(file)
+        formData.append("file", file)
+
+        console.log(formData)
+
+        const isFileNameValid = () => {
+            const file = formData.get("file") as File | null
+    
+            if(file) {
+                const expectedFileName = `${storeId}.pdf`
+                return file.name.replace(/\D/g, '') === expectedFileName.replace(/\D/g, '')
+            }
+    
+            return false;
+        }
+
+        if(!isFileNameValid() && resultElement) {
+            return resultElement.innerHTML = "File name must match store number!"
+         }
 
         try {
-            const response = await fetch('/api/S3/upload', {
+
+            const response = await fetch(`/api/S3/upload`, {
                 method: "POST",
                 body: formData
-            })
+            });
 
-            console.log(response)
+            
+            const data = await response.json()
+            console.log(data.status);
 
-            if (response.ok) {
-                console.log('File uploaded successfully');
-              } else {
-                console.log('Failed to upload file');
-            }
 
+            setUploading(false);
             setFile(null)
+            resultElement!.innerHTML = "Successfuly Uploaded"
+            return response
 
         } catch (error) {
-            console.error('Error uploading file:', error);
-            console.log('Error uploading file');
+            console.log(error);
+            setUploading(false);
         }
     }
 
 
 
     return (
+
         <div>
+            <h1>Upload to S3</h1>
+
+
             <form onSubmit={handleSubmit}>
-                <input onChange={handleFileChange} accept='application/*' type='file' name={`${storeId}`}/>
-                <button type='submit'>Upload</button>
+                <input type="file" accept=" application/*" onChange={handleFileChange} />
+                <button type="submit" disabled={!file || uploading}>{uploading ? "Uploading..." : "Upload"}</button>
+                <h5 id="fileResult"></h5>
             </form>
         </div>
     )
 }
-
-export default S3Upload
